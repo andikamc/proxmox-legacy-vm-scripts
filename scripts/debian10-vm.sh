@@ -452,10 +452,12 @@ for i in {0,1}; do
 done
 
 msg_info "Creating a Debian 10 VM"
+msg_info "Debug:"
+msg_info ""
 qm create $VMID \
   -tablet 0 \
   -localtime 1 \
-  -bios seabios \
+  -bios ovmf${CPU_TYPE} \
   -cores $CORE_COUNT \
   -memory $RAM_SIZE \
   -name $HN \
@@ -463,11 +465,14 @@ qm create $VMID \
   -onboot 1 \
   -ostype l26 \
   -scsihw virtio-scsi-single
-qm importdisk $VMID ${FILE} $STORAGE ${DISK_IMPORT:-} 1>&/dev/null
+pvesm alloc $STORAGE $VMID $DISK0 4M
+qm importdisk $VMID ${FILE} $STORAGE ${DISK_IMPORT:-}
 qm set $VMID \
+  -efidisk0 ${DISK0_REF}${FORMAT} \
   -scsi0 ${DISK1_REF},${DISK_CACHE}${THIN}size=${DISK_SIZE} \
-  -boot order=scsi0
-qm resize $VMID scsi0 ${DISK_SIZE} >/dev/null
+  -boot order=scsi0 \
+  -serial0 socket
+qm resize $VMID scsi0 ${DISK_SIZE}
 
 msg_ok "Created a Debian 10 VM ${CL}${BL}(${HN})"
 if [ "$START_VM" == "yes" ]; then
