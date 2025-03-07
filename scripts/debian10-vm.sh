@@ -482,6 +482,10 @@ else
   msg_ok "Disk resized successfully"
 fi
 
+msg_info "Installing Pre-Requisite libguestfs-tools onto Host"
+apt-get -qq update && apt-get -qq install libguestfs-tools lsb-release -y >/dev/null
+msg_ok "Installed libguestfs-tools successfully"
+
 msg_info "Expand VM Disk using parted (/dev/sda1)"
 virt-customize -q -a "${FILE}" --install parted >/dev/null
 virt-customize -q -a "${FILE}" --run-command "parted /dev/sda resizepart 1 100%" >/dev/null
