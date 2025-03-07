@@ -452,9 +452,6 @@ for i in {0,1}; do
 done
 
 msg_info "Creating a Debian 10 VM"
-echo -e "\n"
-msg_info "Debug:"
-echo -e "\n"
 qm create $VMID \
   -tablet 0 \
   -localtime 1 \
@@ -465,18 +462,16 @@ qm create $VMID \
   -net0 virtio,bridge=$BRG,macaddr=$MAC$VLAN$MTU \
   -onboot 1 \
   -ostype l26 \
-  -scsihw virtio-scsi-single
-pvesm alloc $STORAGE $VMID $DISK0 4M
-echo -e "\n"
-qm importdisk $VMID ${FILE} $STORAGE ${DISK_IMPORT:-}
-echo -e "\n"
+  -scsihw virtio-scsi-single 
+pvesm alloc $STORAGE $VMID $DISK0 4M 1>&/dev/null
+qm importdisk $VMID ${FILE} $STORAGE ${DISK_IMPORT:-} 1>&/dev/null
 qm set $VMID \
   -efidisk0 ${DISK0_REF}${FORMAT} \
   -scsi0 ${DISK1_REF},${DISK_CACHE}${THIN}size=${DISK_SIZE} \
   -boot order=scsi0 \
-  -serial0 socket
-echo -e "\n"
+  -serial0 socket >/dev/null
 qm resize $VMID scsi0 ${DISK_SIZE}
+qm set "$VMID" -description "Auto generated" >/dev/null
 
 msg_ok "Created a Debian 10 VM ${CL}${BL}(${HN})"
 if [ "$START_VM" == "yes" ]; then
