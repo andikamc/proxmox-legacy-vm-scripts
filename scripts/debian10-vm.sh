@@ -483,16 +483,11 @@ else
 fi
 
 msg_info "Expand VM Disk using parted (/dev/sda1)"
-virt-resize --expand /dev/sda1 ${FILE} ${FILE}-expanded.qcow2
-mv ${FILE}-expanded.qcow2 ${FILE}
+virt-customize -q -a "${FILE}" --install parted >/dev/null
+virt-customize -q -a "${FILE}" --run-command "parted /dev/sda resizepart 1 100%" >/dev/null
+virt-customize -q -a "${FILE}" --run-command "resize2fs /dev/sda1" >/dev/null
+virt-customize -q -a "${FILE}" --run-command "partprobe" >/dev/null
 msg_ok "Expanded VM Disk using parted successfully"
-# virt-customize -q -a "${FILE}" --install qemu-guest-agent,apt-transport-https,ca-certificates,curl,gnupg,software-properties-common,lsb-release >/dev/null &&
-# virt-customize -q -a "${FILE}" --run-command "mkdir -p /etc/apt/keyrings && curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg" >/dev/null &&
-# virt-customize -q -a "${FILE}" --run-command "echo 'deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable' > /etc/apt/sources.list.d/docker.list" >/dev/null &&
-# virt-customize -q -a "${FILE}" --run-command "apt-get update -qq && apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin" >/dev/null &&
-# virt-customize -q -a "${FILE}" --run-command "systemctl enable docker" >/dev/null &&
-# virt-customize -q -a "${FILE}" --run-command "echo -n > /etc/machine-id" >/dev/null
-# msg_ok "Expanded VM Disk using parted successfully"
 
 if [ "$START_VM" == "yes" ]; then
   msg_info "Starting Debian 10 VM"
