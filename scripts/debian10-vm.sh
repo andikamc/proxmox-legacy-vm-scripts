@@ -462,7 +462,7 @@ qm create $VMID \
   -net0 virtio,bridge=$BRG,macaddr=$MAC$VLAN$MTU \
   -onboot 1 \
   -ostype l26 \
-  -scsihw virtio-scsi-pci
+  -scsihw virtio-scsi-single
 pvesm alloc $STORAGE $VMID $DISK0 4M 1>&/dev/null
 qm importdisk $VMID ${FILE} $STORAGE ${DISK_IMPORT:-} 1>&/dev/null
 qm set $VMID \
