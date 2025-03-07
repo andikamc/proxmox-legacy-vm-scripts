@@ -452,9 +452,9 @@ for i in {0,1}; do
 done
 
 msg_info "Creating a Debian 10 VM"
-msg_info "\n"
+echo -e "\n"
 msg_info "Debug:"
-msg_info "\n"
+echo -e "\n"
 qm create $VMID \
   -tablet 0 \
   -localtime 1 \
@@ -467,15 +467,15 @@ qm create $VMID \
   -ostype l26 \
   -scsihw virtio-scsi-single
 pvesm alloc $STORAGE $VMID $DISK0 4M
-msg_info "\n"
+echo -e "\n"
 qm importdisk $VMID ${FILE} $STORAGE ${DISK_IMPORT:-}
-msg_info "\n"
+echo -e "\n"
 qm set $VMID \
   -efidisk0 ${DISK0_REF}${FORMAT} \
   -scsi0 ${DISK1_REF},${DISK_CACHE}${THIN}size=${DISK_SIZE} \
   -boot order=scsi0 \
   -serial0 socket
-msg_info "\n"
+echo -e "\n"
 qm resize $VMID scsi0 ${DISK_SIZE}
 
 msg_ok "Created a Debian 10 VM ${CL}${BL}(${HN})"
