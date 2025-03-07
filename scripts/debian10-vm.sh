@@ -463,15 +463,10 @@ qm create $VMID \
   -onboot 1 \
   -ostype l26 \
   -scsihw virtio-scsi-single
-pvesm alloc $STORAGE $VMID $DISK0 4M 1>&/dev/null
 qm importdisk $VMID ${FILE} $STORAGE ${DISK_IMPORT:-} 1>&/dev/null
 qm set $VMID \
-  -efidisk0 ${DISK0_REF}${FORMAT} \
   -scsi0 ${DISK1_REF},${DISK_CACHE}${THIN}size=${DISK_SIZE} \
-  -boot order=scsi0 \
-  -serial0 socket >/dev/null
-qm set "$VMID" -description "$DESCRIPTION" >/dev/null
-msg_info "Resizing disk to $DISK_SIZE GB"
+  -boot order=scsi0
 qm resize $VMID scsi0 ${DISK_SIZE} >/dev/null
 
 msg_ok "Created a Debian 10 VM ${CL}${BL}(${HN})"
