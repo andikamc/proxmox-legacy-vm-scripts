@@ -451,6 +451,16 @@ for i in {0,1}; do
   eval DISK${i}_REF=${STORAGE}:${DISK_REF:-}${!disk}
 done
 
+msg_info "Expand VM Disk using parted (/dev/sda)"
+virt-customize -q -a "${FILE}" --install qemu-guest-agent,apt-transport-https,ca-certificates,curl,wget,gnupg,software-properties-common,lsb-release,parted >/dev/null &&
+virt-customize -q -a "${FILE}" --run-command 'wget https://github.com/andikamc/proxmox-legacy-vm-scripts/raw/master/services/rc-parted.service -O /lib/systemd/system/rc-parted.service' >/dev/null &&
+virt-customize -q -a "${FILE}" --run-command 'systemctl enable rc-parted' >/dev/null &&
+virt-customize -q -a "${FILE}" --run-command 'wget https://github.com/andikamc/proxmox-legacy-vm-scripts/raw/master/services/rc-parted.sh -O /etc/rc-parted.sh' >/dev/null &&
+virt-customize -q -a "${FILE}" --run-command 'chmod +x /etc/rc-parted.sh' >/dev/null &&
+virt-customize -q -a "${FILE}" --run-command 'echo -n > /etc/machine-id' >/dev/null
+msg_ok "Expanded VM Disk using parted successfully"
+
+
 msg_info "Creating a Debian 10 VM"
 qm create $VMID \
   -tablet 0 \
@@ -485,16 +495,6 @@ fi
 msg_info "Installing Pre-Requisite libguestfs-tools onto Host"
 apt-get -qq update && apt-get -qq install libguestfs-tools lsb-release -y >/dev/null
 msg_ok "Installed libguestfs-tools successfully"
-
-msg_info "Expand VM Disk using parted (/dev/sda1)"
-# virt-resize --expand /dev/sda1 ${FILE} ${FILE}-expanded
-# mv ${FILE}-expanded ${FILE}
-# virt-customize -q -a "${FILE}" --run-command "partprobe" >/dev/null
-# virt-customize -q -a "${FILE}" --install parted >/dev/null
-# virt-customize -q -a "${FILE}" --run-command "parted /dev/sda resizepart 1 100%" >/dev/null
-# virt-customize -q -a "${FILE}" --run-command "resize2fs /dev/sda1" >/dev/null
-# virt-customize -q -a "${FILE}" --run-command "partprobe" >/dev/null
-msg_ok "Expanded VM Disk using parted successfully"
 
 if [ "$START_VM" == "yes" ]; then
   msg_info "Starting Debian 10 VM"
