@@ -59,7 +59,7 @@ VLANTAG="${TAB}🏷️${TAB}${CL}"
 CREATING="${TAB}🚀${TAB}${CL}"
 ADVANCED="${TAB}🧩${TAB}${CL}"
 
-THIN="discard=on,ssd=1,"
+THIN="discard=on,ssd=1,replicate=0,backup=0,iothread=1,"
 set -e
 trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 trap cleanup EXIT
