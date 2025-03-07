@@ -23,9 +23,9 @@ GEN_MAC=02:$(openssl rand -hex 5 | awk '{print toupper($0)}' | sed 's/\(..\)/\1:
 NEXTID=$(pvesh get /cluster/nextid)
 RANDOM_UUID="$(cat /proc/sys/kernel/random/uuid)"
 METHOD=""
-NSAPP="debian10vm"
+NSAPP="debian11vm"
 var_os="debian"
-var_version="10"
+var_version="11"
 
 YW=$(echo "\033[33m")
 BL=$(echo "\033[36m")
@@ -90,7 +90,7 @@ function cleanup() {
 
 TEMP_DIR=$(mktemp -d)
 pushd $TEMP_DIR >/dev/null
-if whiptail --backtitle "Proxmox VE Helper Scripts" --title "Debian 10 VM" --yesno "This will create a New Debian 10 VM. Proceed?" 10 58; then
+if whiptail --backtitle "Proxmox VE Helper Scripts" --title "Debian 11 VM" --yesno "This will create a New Debian 11 VM. Proceed?" 10 58; then
   :
 else
   header_info &&   echo -e "${CROSS}${RD}User exited script${CL}\n" && exit
@@ -189,7 +189,7 @@ function default_settings() {
   echo -e "${VLANTAG}${BOLD}${DGN}VLAN: ${BGN}Default${CL}"
   echo -e "${DEFAULT}${BOLD}${DGN}Interface MTU Size: ${BGN}Default${CL}"
   echo -e "${GATEWAY}${BOLD}${DGN}Start VM when completed: ${BGN}yes${CL}"
-  echo -e "${CREATING}${BOLD}${DGN}Creating a Debian 10 VM using the above default settings${CL}"
+  echo -e "${CREATING}${BOLD}${DGN}Creating a Debian 11 VM using the above default settings${CL}"
 }
 
 function advanced_settings() {
@@ -364,8 +364,8 @@ function advanced_settings() {
     START_VM="no"
   fi
 
-  if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "ADVANCED SETTINGS COMPLETE" --yesno "Ready to create a Debian 10 VM?" --no-button Do-Over 10 58); then
-    echo -e "${CREATING}${BOLD}${DGN}Creating a Debian 10 VM using the above advanced settings${CL}"
+  if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "ADVANCED SETTINGS COMPLETE" --yesno "Ready to create a Debian 11 VM?" --no-button Do-Over 10 58); then
+    echo -e "${CREATING}${BOLD}${DGN}Creating a Debian 11 VM using the above advanced settings${CL}"
   else
     header_info
     echo -e "${ADVANCED}${BOLD}${RD}Using Advanced Settings${CL}"
@@ -421,8 +421,8 @@ else
 fi
 msg_ok "Using ${CL}${BL}$STORAGE${CL} ${GN}for Storage Location."
 msg_ok "Virtual Machine ID is ${CL}${BL}$VMID${CL}."
-msg_info "Retrieving the URL for the Debian 10 Qcow2 Disk Image"
-URL=http://cloud.debian.org/images/cloud/buster/20240703-1797/debian-10-nocloud-amd64-20240703-1797.qcow2
+msg_info "Retrieving the URL for the Debian 11 Qcow2 Disk Image"
+URL=http://cloud.debian.org/images/cloud/bullseye/20250303-2040/debian-11-nocloud-amd64-20250303-2040.qcow2
 sleep 2
 msg_ok "${CL}${BL}${URL}${CL}"
 wget -q --show-progress $URL
@@ -461,7 +461,7 @@ virt-customize -q -a "${FILE}" --run-command 'echo -n > /etc/machine-id' >/dev/n
 msg_ok "Expanded VM Disk using parted successfully"
 
 
-msg_info "Creating a Debian 10 VM"
+msg_info "Creating a Debian 11 VM"
 qm create $VMID \
   -tablet 0 \
   -localtime 1 \
@@ -480,7 +480,7 @@ qm set $VMID \
   -scsi0 ${DISK1_REF},${DISK_CACHE}${THIN}size=${DISK_SIZE} \
   -boot order=scsi0 \
   -serial0 socket >/dev/null
-msg_ok "Created a Debian 10 VM ${CL}${BL}(${HN})"
+msg_ok "Created a Debian 11 VM ${CL}${BL}(${HN})"
 
 if [ -n "$DISK_SIZE" ]; then
   msg_info "Resizing disk to $DISK_SIZE GB"
@@ -497,9 +497,9 @@ apt-get -qq update && apt-get -qq install libguestfs-tools lsb-release -y >/dev/
 msg_ok "Installed libguestfs-tools successfully"
 
 if [ "$START_VM" == "yes" ]; then
-  msg_info "Starting Debian 10 VM"
+  msg_info "Starting Debian 11 VM"
   qm start $VMID
-  msg_ok "Started Debian 10 VM"
+  msg_ok "Started Debian 11 VM"
 fi
 
 msg_ok "Completed Successfully!\n"
