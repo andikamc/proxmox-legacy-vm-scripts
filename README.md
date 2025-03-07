@@ -12,7 +12,8 @@ This script automates the creation of a Debian 10 virtual machine on Proxmox VE.
 
 To create a new Proxmox VE - VM, run the command below in the Proxmox VE Shell.
 
-```bash -c "$(wget -qLO - https://github.com/andikamc/proxmox-legacy-vm-scripts/raw/master/scripts/debian10-vm.sh)"
+```sh
+bash -c "$(wget -qLO - https://github.com/andikamc/proxmox-legacy-vm-scripts/raw/master/scripts/debian10-vm.sh)"
 ```
 
 ## Script Details
