@@ -470,7 +470,13 @@ qm set $VMID \
   -scsi0 ${DISK1_REF},${DISK_CACHE}${THIN}size=${DISK_SIZE} \
   -boot order=scsi0 \
   -serial0 socket >/dev/null
-qm resize $VMID scsi0 ${DISK_SIZE}
+if [ -n "$DISK_SIZE" ]; then
+    msg_info "Resizing disk to $DISK_SIZE GB"
+    qm resize $VMID scsi0 ${DISK_SIZE} >/dev/null
+else
+    msg_info "Using default disk size of $DEFAULT_DISK_SIZE GB"
+    qm resize $VMID scsi0 ${DEFAULT_DISK_SIZE} >/dev/null
+fi
 qm set "$VMID" -description "Auto generated" >/dev/null
 
 msg_ok "Created a Debian 10 VM ${CL}${BL}(${HN})"
