@@ -422,7 +422,7 @@ fi
 msg_ok "Using ${CL}${BL}$STORAGE${CL} ${GN}for Storage Location."
 msg_ok "Virtual Machine ID is ${CL}${BL}$VMID${CL}."
 msg_info "Retrieving the URL for the Debian 11 Qcow2 Disk Image"
-URL=https://mirror.sjtu.edu.cn/debian-cdimage/cloud/bullseye/20250303-2040/debian-11-nocloud-amd64-20250303-2040.qcow2
+URL=https://cloud.debian.org/images/cloud/bullseye/20250303-2040/debian-11-nocloud-amd64-20250303-2040.qcow2
 sleep 2
 msg_ok "${CL}${BL}${URL}${CL}"
 wget -q --show-progress $URL
@@ -450,9 +450,9 @@ for i in {0,1}; do
   eval DISK${i}=vm-${VMID}-disk-${i}${DISK_EXT:-}
   eval DISK${i}_REF=${STORAGE}:${DISK_REF:-}${!disk}
 done
-virt-customize -q -a "${FILE}" --install qemu-guest-agent,apt-transport-https,ca-certificates,curl,wget,gnupg,software-properties-common,lsb-release,parted >/dev/null
 
 msg_info "Creating a Debian 11 VM"
+virt-customize -q -a "${FILE}" --install qemu-guest-agent,apt-transport-https,ca-certificates,curl,wget,gnupg,software-properties-common,lsb-release,parted >/dev/null
 qm create $VMID \
   -tablet 0 \
   -localtime 1 \
