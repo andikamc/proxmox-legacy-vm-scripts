@@ -487,9 +487,9 @@ apt-get -qq update && apt-get -qq install libguestfs-tools lsb-release -y >/dev/
 msg_ok "Installed libguestfs-tools successfully"
 
 msg_info "Expand VM Disk using parted (/dev/sda1)"
-virt-resize --expand /dev/sda1 ${FILE} ${FILE}-expanded
-mv ${FILE}-expanded ${FILE}
-virt-customize -q -a "${FILE}" --run-command "partprobe" >/dev/null
+# virt-resize --expand /dev/sda1 ${FILE} ${FILE}-expanded
+# mv ${FILE}-expanded ${FILE}
+# virt-customize -q -a "${FILE}" --run-command "partprobe" >/dev/null
 # virt-customize -q -a "${FILE}" --install parted >/dev/null
 # virt-customize -q -a "${FILE}" --run-command "parted /dev/sda resizepart 1 100%" >/dev/null
 # virt-customize -q -a "${FILE}" --run-command "resize2fs /dev/sda1" >/dev/null
